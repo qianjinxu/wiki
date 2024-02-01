@@ -1,0 +1,42 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: wiki-v1
+  labels:
+    app: wiki
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wiki
+      version: v1
+  template:
+    metadata:
+      name: wiki
+      labels:
+        app: wiki
+        version: v1
+    spec:
+      containers:
+        - name: wiki
+          image: registry.jin.bio/go/wiki:v0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: wiki
+  labels:
+    service: wiki
+    app: wiki
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: wiki
